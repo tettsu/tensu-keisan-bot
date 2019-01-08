@@ -25,37 +25,38 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  // 相手をユーザーorグループorルームか判別する
   let tempId = ''
-  if (event.source.type === 'user') {
-    tempId = event.source.userId;
-  } else if(event.source.type === 'room') {
-    tempId = event.source.roomId;
-  } else if(event.source.type === 'group'){
-    tempId = event.source.groupId;
-  }
-
-  let mes = ''
-  if(event.message.text === '一翻40符'){
-    mes = '待っててね';
-    getTodayForecast(tempId);
-  }
-
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: mes
-  });
-}
-
-const getTodayForecast = async (tempId) => {
+    if (event.source.type === 'user') {
+      tempId = event.source.userId;
+    } else if(event.source.type === 'room') {
+      tempId = event.source.roomId;
+    } else if(event.source.type === 'group'){
+      tempId = event.source.groupId;
+    }
     
-    let num = 40 * 4 * 2 * 2 * 2;
-
+    // 待っててねメッセージ
     client.pushMessage(tempId, {
       type: 'text',
-      text: num,
+      text: "待っててね"
     });
-}
+
+    // 点数計算してscoreをreply
+    let score = calcScore(event.message.text);
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: score
+    });
+  }
+
+  // 点数計算
+  function calcScore(text) {
+    var tempScore = 1;
+    if(text.match("一翻")){
+      tempScore *= 2;
+    }
+    return tempScore;
+  }
+  
 
 app.listen(PORT);
 console.log(`Server running at ${PORT}`);
