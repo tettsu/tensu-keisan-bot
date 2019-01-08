@@ -1,4 +1,4 @@
-# match3-bot2
+# tensu-keisan-bot
 麻雀の点数計算を行うLINE BOTです。
 
 ## デプロイ
