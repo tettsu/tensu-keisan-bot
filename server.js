@@ -49,11 +49,49 @@ function handleEvent(event) {
   }
 
   // 点数計算
-  function calcScore(text) {
+  function calcScore(tempMessageText) {
     var tempScore = 1;
-    if(text.match("一翻")){
-      tempScore *= 2;
+    var oyaBonus = 1;
+    var han = 2; //場ゾロ
+    var fu = 20;　//最低符数
+
+    // 翻数
+    if(tempMessageText.match('一')){
+      han += 1;
     }
+    if(tempMessageText.match('二')){
+      han += 2;
+    }
+    if(tempMessageText.match('三')){
+      han += 3;
+    }
+    if(tempMessageText.match('四')){
+      han += 4;
+    }
+
+    // 符数
+    if(tempMessageText.match('20')){
+      fu = 20;
+    }
+    if(tempMessageText.match('30')){
+      fu = 30;
+    }
+    if(tempMessageText.match('40')){
+      fu = 40;
+    }
+    if(tempMessageText.match('50')){
+      fu = 50;
+    }
+
+    // 親ボーナス
+    if(tempMessageText.match('親')){
+      oyaBonus = 1.5;
+    }
+
+    tempScore *= han;
+    tempScore *= fu;
+    tempScore *= oyaBonus;
+
     return tempScore;
   }
   
