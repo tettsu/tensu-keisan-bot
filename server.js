@@ -34,17 +34,17 @@ function handleEvent(event) {
       tempId = event.source.groupId;
     }
     
-    // 待っててねメッセージ
-    client.pushMessage(tempId, {
-      type: 'text',
-      text: "待っててね"
-    });
+    // // 待っててねメッセージ
+    // client.pushMessage(tempId, {
+    //   type: 'text',
+    //   text: "待っててね"
+    // });
 
     // 点数計算してscoreをreply
     let score = calcScore(event.message.text);
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: score
+      text: score + "点"
     });
   }
 
@@ -107,18 +107,23 @@ function handleEvent(event) {
       fu = 20;
     }
 
+    // 本計算
+    tempScore *= (2 ** han);
+    tempScore *= fu;
+    tempScore *= 4;
+
+    // 8,000点を超えている場合は満貫へ移行
+    if(tempScore > 8000) {
+      tempScore = 8000;
+    }
+
     // 親ボーナス
     if(tempMessageText.match('親')){
       oyaBonus = 1.5;
     }
-
-    // 本計算
-    tempScore *= (2 ** han);
-    tempScore *= fu;
     tempScore *= oyaBonus;
-    tempScore *= 4;
 
-    // 下二桁切り上げ
+    // 最後に下二桁切り上げ
     tempScore = Math.ceil(tempScore/100) * 100;
     
     return tempScore;
