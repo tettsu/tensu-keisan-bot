@@ -56,31 +56,55 @@ function handleEvent(event) {
     var fu = 20;　//最低符数
 
     // 翻数
-    if(tempMessageText.match('一')){
-      han += 1;
-    }
-    if(tempMessageText.match('二')){
-      han += 2;
-    }
-    if(tempMessageText.match('三')){
-      han += 3;
-    }
-    if(tempMessageText.match('四')){
+    if(tempMessageText.match('十三')){
+      han += 13;
+    } else if(tempMessageText.match('十二')){
+      han += 12;
+    } else if(tempMessageText.match('十一')){
+      han += 11;
+    } else if(tempMessageText.match('十')){
+      han += 10;
+    } else if(tempMessageText.match('九')){
+      han += 9;
+    } else if(tempMessageText.match('八')){
+      han += 8;
+    } else if(tempMessageText.match('七')){
+      han += 7;
+    } else if(tempMessageText.match('六')){
+      han += 6;
+    } else if(tempMessageText.match('五')){
+      han += 5;
+    } else if(tempMessageText.match('四')){
       han += 4;
+    } else if(tempMessageText.match('三')){
+      han += 3;
+    } else if(tempMessageText.match('二')){
+      han += 2;
+    } else if(tempMessageText.match('一')){
+      han += 1;
     }
 
     // 符数
-    if(tempMessageText.match('20')){
-      fu = 20;
-    }
-    if(tempMessageText.match('30')){
-      fu = 30;
-    }
-    if(tempMessageText.match('40')){
-      fu = 40;
-    }
-    if(tempMessageText.match('50')){
+    if(tempMessageText.match('110')){
+      fu = 110;
+    } else if(tempMessageText.match('100')){
+      fu = 100;
+    } else if(tempMessageText.match('90')){
+      fu = 90;
+    } else if(tempMessageText.match('80')){
+      fu = 80;
+    } else if(tempMessageText.match('70')){
+      fu = 70;
+    } else if(tempMessageText.match('60')){
+      fu = 60;
+    } else if(tempMessageText.match('50')){
       fu = 50;
+    } else if(tempMessageText.match('40')){
+      fu = 40;
+    } else if(tempMessageText.match('30')){
+      fu = 30;
+    } else if(tempMessageText.match('20')){
+      fu = 20;
     }
 
     // 親ボーナス
@@ -88,10 +112,15 @@ function handleEvent(event) {
       oyaBonus = 1.5;
     }
 
-    tempScore *= han;
+    // 本計算
+    tempScore *= (2 ** han);
     tempScore *= fu;
     tempScore *= oyaBonus;
+    tempScore *= 4;
 
+    // 下二桁切り上げ
+    tempScore = Math.ceil(tempScore/100) * 100;
+    
     return tempScore;
   }
   
