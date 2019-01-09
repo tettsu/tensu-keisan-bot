@@ -26,6 +26,11 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  // 翻をトリガーにする
+  if (!(event.message.text.match('翻')) || event.message.text.match('翻訳')){
+    return null;
+  }
+
   // reply先IDを特定
   let tempId = identifyId(event.source);
 
@@ -34,7 +39,7 @@ function handleEvent(event) {
   if (inputCheckResult === 'oyakoNotInputError') {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: "親子情報の入力が確認できませんでした。"
+      text: "親・子はどちらか片方のみ入力して下さい。\n入力が無い場合は子として算出します。"
     });
   }
   if (inputCheckResult === 'hanNotInputError') {
@@ -55,7 +60,7 @@ function handleEvent(event) {
   if (invalidHanCheckResult === 'hanInvalidError') {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: "翻数を正しく入力して下さい。有効な翻数は1翻~13翻です。"
+      text: "翻数を正しく入力して下さい。\n有効な翻数は1翻~13翻です。"
     });
   }
 
@@ -64,15 +69,18 @@ function handleEvent(event) {
   if (invalidFuCheckResult === 'fuInvalidError') {
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: "符数を正しく入力して下さい。有効な符数は20符~110符で10符単位です。25符のみ例外となります。"
+      text: "符数を正しく入力して下さい。\n有効な符数は20符~110符で10符単位です。\n25符のみ例外となります。"
     });
   }
     
-  // エラーにならなかったので点数計算点数計算してscoreをreply
+  // エラーにならなかったので点数計算
+  // ツモ時は子1/4、親1/2の支払いを表示。100点単位になるように49捨50入する。
   let score = calcScore(event.message.text);
+  let koScore = (Math.ceil(score/400)) * 100;
+  let oyaScore =(Math.ceil(score/200)) * 100; 
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: score + "点"
+    text: "ロン\n" + score + "点\nツモ\n子(" + (koScore) + "点)\n" + "親(" + (oyaScore) + "点)"
   });
 }
 
@@ -91,7 +99,7 @@ function handleEvent(event) {
 
   // 入力チェックロジック
   function inputCheck(tempMessageText) {
-    if(!(tempMessageText.match('親') || tempMessageText.match('子'))) {
+    if((tempMessageText.match('親') && tempMessageText.match('子'))) {
       return "oyakoNotInputError"
     }
     if(!(tempMessageText.match('翻'))) {
