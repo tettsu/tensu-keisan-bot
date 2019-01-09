@@ -2,7 +2,6 @@
 
 const express = require('express');
 const line = require('@line/bot-sdk');
-const axios = require('axios');
 const PORT = process.env.PORT || 3000;
 const config = {
   channelSecret: '',
@@ -34,6 +33,15 @@ function handleEvent(event) {
   // reply先IDを特定
   let tempId = identifyId(event.source);
 
+  // 翻値チェック
+  let invalidHanCheckResult = hanInvalidCheck(event.message.text);
+  if (invalidHanCheckResult === 'hanInvalidError') {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: "翻数を正しく入力して下さい。\n有効な翻数は1翻~13翻です。"
+    });
+  }
+
   // 入力チェック
   let inputCheckResult = inputCheck(event.message.text);
   if (inputCheckResult === 'oyakoNotInputError') {
@@ -52,15 +60,6 @@ function handleEvent(event) {
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: "符数の入力が確認できませんでした。"
-    });
-  }
-
-  // 翻値チェック
-  let invalidHanCheckResult = hanInvalidCheck(event.message.text);
-  if (invalidHanCheckResult === 'hanInvalidError') {
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: "翻数を正しく入力して下さい。\n有効な翻数は1翻~13翻です。"
     });
   }
 
