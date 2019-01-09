@@ -42,36 +42,70 @@ function handleEvent(event) {
 
     // 点数計算してscoreをreply
     let score = calcScore(event.message.text);
+
+
+
+    // 親子情報未入力エラー
+    if (score === 'oyakoNotInputError') {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "親子情報の入力が確認できませんでした。"
+      });
+    }
+
+    // 翻数未入力エラー
+    if (score === 'hanNotInputError') {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "翻数の入力が確認できませんでした。"
+      });
+    }
+    // 翻数不正エラー
+    if (score === 'hanInvalidError') {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "翻数を正しく入力して下さい。有効な翻数は1翻~13翻です。"
+      });
+    }
+
+    // 符数未入力エラー
+    if (score === 'fuNotInputError') {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "符数の入力が確認できませんでした。"
+      });
+    }
+    // 符数不正エラー
+    if (score === 'fuInvalidError') {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "符数を正しく入力して下さい。有効な符数は20符~110符で10符単位です。25符のみ例外となります。"
+      });
+    }
+    
+    // エラーにならなかったので点数計算
     return client.replyMessage(event.replyToken, {
       type: 'text',
       text: score + "点"
     });
   }
 
+
+  
   // 点数計算ロジック
   function calcScore(tempMessageText) {
 
-    // 親子情報が無いものをはじく
-    if(!(tempMessageText.match('親') || tempMessageText.match('おや') || tempMessageText.match('オヤ') || tempMessageText.match('ｵﾔ')
-      || tempMessageText.match('子') || tempMessageText.match('こ') || tempMessageText.match('コ') || tempMessageText.match('ｺ'))) {
-        return client.replyMessage(event.replyToken, {
-          type: 'text',
-          text: "親子情報が確認できませんでした。"
-        });
+    // 親子情報未入力エラー
+    if(!(tempMessageText.match('親') || tempMessageText.match('子'))) {
+        return "oyakoNotInputError"
     }
-    // 翻数情報が無いものをはじく
-    if(!(tempMessageText.match('翻') || tempMessageText.match('はん') || tempMessageText.match('ハン') || tempMessageText.match('ﾊﾝ'))) {
-        return client.replyMessage(event.replyToken, {
-          type: 'text',
-          text: "翻数情報が確認できませんでした。"
-        });    
+    // 翻数未入力エラー
+    if(!(tempMessageText.match('翻'))) {
+        return "hanNotInputError"
     }
     // 符数情報が無いものをはじく
-    if(!(tempMessageText.match('符') || tempMessageText.match('ふ') || tempMessageText.match('フ') || tempMessageText.match('ﾌ'))) {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: "符数情報が確認できませんでした。"
-      });    
+    if(!(tempMessageText.match('符'))) {
+      return "fuNotInputError"
     }
 
     var tempScore = 1;
@@ -80,42 +114,39 @@ function handleEvent(event) {
     var fu = 20;　//20は最低符数
 
     // 親子判定
-    if(tempMessageText.match('親') || tempMessageText.match('おや') || tempMessageText.match('オヤ')){
+    if(tempMessageText.match('親')){
       oyaBonus = 1.5;
     }
 
     // 翻数
-    if(tempMessageText.match('十三')){
+    if(tempMessageText.match('十三翻') || tempMessageText.match('13翻')){
       han += 13;
-    } else if(tempMessageText.match('十二')){
+    } else if(tempMessageText.match('十二翻') || tempMessageText.match('12翻')){
       han += 12;
-    } else if(tempMessageText.match('十一')){
+    } else if(tempMessageText.match('十一翻') || tempMessageText.match('11翻')){
       han += 11;
-    } else if(tempMessageText.match('十')){
+    } else if(tempMessageText.match('十翻') || tempMessageText.match('10翻')){
       han += 10;
-    } else if(tempMessageText.match('九')){
+    } else if(tempMessageText.match('九翻') || tempMessageText.match('9翻')){
       han += 9;
-    } else if(tempMessageText.match('八')){
+    } else if(tempMessageText.match('八翻') || tempMessageText.match('8翻')){
       han += 8;
-    } else if(tempMessageText.match('七')){
+    } else if(tempMessageText.match('七翻') || tempMessageText.match('7翻')){
       han += 7;
-    } else if(tempMessageText.match('六')){
+    } else if(tempMessageText.match('六翻') || tempMessageText.match('6翻')){
       han += 6;
-    } else if(tempMessageText.match('五')){
+    } else if(tempMessageText.match('五翻') || tempMessageText.match('5翻')){
       han += 5;
-    } else if(tempMessageText.match('四')){
+    } else if(tempMessageText.match('四翻') || tempMessageText.match('4翻')){
       han += 4;
-    } else if(tempMessageText.match('三')){
+    } else if(tempMessageText.match('三翻') || tempMessageText.match('3翻')){
       han += 3;
-    } else if(tempMessageText.match('二')){
+    } else if(tempMessageText.match('二翻') || tempMessageText.match('2翻')){
       han += 2;
-    } else if(tempMessageText.match('一')){
+    } else if(tempMessageText.match('一翻') || tempMessageText.match('1翻')){
       han += 1;
     } else {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: "翻数を正しく入力して下さい。入力可能な範囲は一~十三です。"
-      });     
+      return 'hanInvalidError';
     }
 
     // 符数
@@ -142,10 +173,7 @@ function handleEvent(event) {
     } else if(tempMessageText.match('20符') || tempMessageText.match('二十符')){
       fu = 20;
     } else {
-      return client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: "符数を正しく入力して下さい。入力可能な範囲は20~110で、10符単位です。例外は25符のみです。"
-      });
+      return 'fuInvalidError';
     }
 
     // 本計算
