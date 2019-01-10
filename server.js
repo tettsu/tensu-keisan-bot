@@ -25,6 +25,14 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  // アカギをfix
+  if (event.message.text.match('ニセアカギ')){
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: "本物のアカギだよ。"
+    });
+  }
+  
   // 翻をトリガーにする
   if (!(event.message.text.match('翻')) || event.message.text.match('翻訳')){
     return null;
