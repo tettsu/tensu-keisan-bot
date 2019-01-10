@@ -73,7 +73,7 @@ function handleEvent(event) {
   }
     
   // エラーにならなかったので点数計算
-  // ツモ時は子1/4、親1/2の支払いを表示。100点単位になるように49捨50入する。
+  // ツモ時は子1/4、親1/2の支払いを表示。100点単位になるように切り上げする。
   let score = calcScore(event.message.text);
   let koScore = (Math.ceil(score/400)) * 100;
   let oyaScore =(Math.ceil(score/200)) * 100; 
